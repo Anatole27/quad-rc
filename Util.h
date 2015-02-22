@@ -1,5 +1,5 @@
-#ifndef UTIL_HPP
-#define UTIL_HPP
+#ifndef UTIL_H
+#define UTIL_H
 
 class Util
 {
@@ -12,4 +12,4 @@ public:
     static const float pi = 3.14159265359;
 };
 
-#endif // UTIL_HPP
+#endif // UTIL_H

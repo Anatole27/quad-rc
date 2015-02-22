@@ -1,5 +1,5 @@
-#ifndef DEF_ATTITUDEMANAGER
-#define DEF_ATTITUDEMANAGER
+#ifndef DEF_ATTITUDEMANAGER_H
+#define DEF_ATTITUDEMANAGER_H
 
 #include "Util.h"
 #include <MatrixMath.h>

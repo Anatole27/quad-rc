@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include "Sensors.h"
 #include "AttitudeManager.h"
-#include <MatrixMath.h>
+#include "MatrixMath.h"
 
 AttitudeManager* attitudeManager;
 Sensors* sensors;
@@ -22,42 +22,16 @@ int main()
     attitudeManager = new AttitudeManager();
     sensors = new Sensors();
 
-    //Attitude Manager
-    /*void run();*/
-    //setReference
-    float ref[4] = {21,2,4,2};
-    attitudeManager->setReference((float*)ref);
-    //getReference
-    Serial.println(F(".getRef()"));
-    attitudeManager->getReference((float*)ref);
-    Matrix.Print(ref,4,1,"getRef");
-    //periodElapsed()
-    //    while(millis() < 1000)
-    //        if(attitudeManager->periodElapsed())
-    //            Serial.println(millis());
-    //    attitudeManager->setPeriod(100);
-    //    while(millis() < 2000)
-    //        if(attitudeManager->periodElapsed())
-    //            Serial.println(millis());
-    //matrix K
-    float Kpos[16] = {1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1};
-    float Kspeed[16] = {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2};
-    float Kint[16] = {3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3};
-    attitudeManager->setKIntegral((float*)Kint);
-    attitudeManager->setKPosition((float*)Kpos);
-    attitudeManager->setKSpeed((float*)Kspeed);
-    //    Matrix.Print((float*)attitudeManager->m_KIntegral,4,4,"Integral");
-    //    Matrix.Print((float*)attitudeManager->m_KSpeed,4,4,"Speed");
-    //    Matrix.Print((float*)attitudeManager->m_KPosition,4,4,"Position");
-    //Run
+    float attitudeState[4] = {0};
+    float attitudeDerivative[4] = {0};
+
     while(millis() < 1000){
-        if(attitudeManager->periodElapsed())
-            attitudeManager->run();
+        sensors->run();
+        sensors->getAttitudeState((float*)attitudeState);
+        sensors->getAttitudeDerivative((float*)attitudeDerivative);
+        Matrix.Print(attitudeState,4,1,"State");
+        Matrix.Print(attitudeDerivative,4,1,"Derivative");
     }
-    //Integral
-
-
-
 
 
     //Fin de test

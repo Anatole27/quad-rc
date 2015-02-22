@@ -1,2 +1,7 @@
 *.o
 *~
+*.config
+*.creator.user
+*.creator
+*.files
+*.includes
