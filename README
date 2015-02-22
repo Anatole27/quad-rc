@@ -1,0 +1,25 @@
+To do list :
+
+Add i2cdevlib library to the project
+
+******************
+*Attitude Manager*
+******************
+
+bool isClose();
+
+*********
+*Sensors*
+*********
+
+*****
+*IMU*
+*****
+
+Use i2cdevlib example
+
+*******
+*Motor*
+*******
+
+void sendMotorOutput();

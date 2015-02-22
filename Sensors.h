@@ -12,7 +12,7 @@ public :
     void getAttitudeDerivative(float* attitudeDerivative);
 
 private :
-
+    IMU imu;
 };
 
 extern Sensors *sensors;
