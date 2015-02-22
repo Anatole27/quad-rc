@@ -132,12 +132,6 @@ void IMU::getGyro(float* gyroRates)
     gyroRates[0] = gyro[0];
     gyroRates[1] = gyro[1];
     gyroRates[2] = gyro[2];
-    Serial.print("gyro = ");
-    Serial.print(gyro[0]);
-    Serial.print(", ");
-    Serial.print(gyro[1]);
-    Serial.print(", ");
-    Serial.print(gyro[2]);
 }
 
 void IMU::getRelativeAcceleration(float* relativeAccel)
