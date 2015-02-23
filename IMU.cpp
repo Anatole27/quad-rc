@@ -65,12 +65,10 @@ bool IMU::initialize()
 // Read the data from DMP
 void IMU::readData() {
     // Empty the buffer to avoid overflow
-    Serial.println(mpuInterrupt);
     while(mpuInterrupt || fifoCount >= packetSize)
     {
         //reset interrupt
         mpuInterrupt = false;
-        Serial.println(millis());
         mpuIntStatus = mpu.getIntStatus();
         // get current FIFO count
         fifoCount = mpu.getFIFOCount();
@@ -99,11 +97,6 @@ void IMU::readData() {
             //get Gyro rates
             mpu.dmpGetGyro(gyro, fifoBuffer);
 
-            //Rotation rates conversion in rad/s
-            gyro[0] = gyro[0]*3.14/130;
-            gyro[1] = gyro[1]*3.14/130;
-            gyro[2] = gyro[3]*3.14/130;
-
             // get Gravity unity vector in body axis
             mpu.dmpGetGravity(&gravity, &q);
 
@@ -116,12 +109,6 @@ void IMU::readData() {
             // get acceleration in earth axis
             mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
 
-            //Acceleration conversion in m.s-2
-            for(int i = 0;i<3;i++){
-                aa[i] = aa[i]*9.81/8192;
-                aaReal[i] = aaReal[i]*9.81/8192;
-                aaWorld[i] = aaWorld[i]*9.81/8192;
-            }
         }
     }
 }
@@ -141,28 +128,32 @@ void IMU::getEulerAngles(float* eulerAngles)
 
 void IMU::getGyro(float* gyroRates)
 {
-    gyroRates[0] = gyro[0];
-    gyroRates[1] = gyro[1];
-    gyroRates[2] = gyro[2];
+    //Rotation rates conversion in rad/s
+    gyroRates[0] = (float)gyro[0]*3.14f/130;
+    gyroRates[1] = (float)gyro[1]*3.14f/130;
+    gyroRates[2] = (float)gyro[2]*3.14f/130;
 }
 
 void IMU::getRelativeAcceleration(float* relativeAccel)
 {
-    relativeAccel[0] = aa.x;
-    relativeAccel[1] = aa.y;
-    relativeAccel[2] = aa.z;
+    //Acceleration conversion in m.s-2
+    relativeAccel[0] = (float)aa.x*9.81f/8192;
+    relativeAccel[1] = (float)aa.y*9.81f/8192;
+    relativeAccel[2] = (float)aa.z*9.81f/8192;
 }
 
 void IMU::getLinearAcceleration(float *acceleration)
 {
-    acceleration[0] = aaReal.x;
-    acceleration[1] = aaReal.y;
-    acceleration[2] = aaReal.z;
+    //Acceleration conversion in m.s-2
+    acceleration[0] = (float)aaReal.x*9.81f/8192;
+    acceleration[1] = (float)aaReal.y*9.81f/8192;
+    acceleration[2] = (float)aaReal.z*9.81f/8192;
 }
 
 void IMU::getEarthAcceleration(float *earthAccel)
 {
-    earthAccel[0] = aaWorld.x;
-    earthAccel[1] = aaWorld.y;
-    earthAccel[2] = aaWorld.z;
+    //Acceleration conversion in m.s-2
+    earthAccel[0] = (float)aaWorld.x*9.81f/8192;
+    earthAccel[1] = (float)aaWorld.y*9.81f/8192;
+    earthAccel[2] = (float)aaWorld.z*9.81f/8192;
 }
