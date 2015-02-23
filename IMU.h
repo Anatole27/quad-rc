@@ -39,7 +39,7 @@ private :
     VectorInt16 aaWorld; // [x, y, z] world-frame accel sensor measurements
     VectorFloat gravity; // [x, y, z] gravity vector
     float euler[3]; // [psi, theta, phi] Euler angle container
-    int32_t gyro[3]; //[P,Q,R] angularSpeeds
+    int16_t gyro[3]; //[P,Q,R] angularSpeeds
 
 };
 

@@ -32,7 +32,7 @@ bool IMU::initialize()
     mpu.setXGyroOffset(220);
     mpu.setYGyroOffset(76);
     mpu.setZGyroOffset(-85);
-    mpu.setZAccelOffset(1788);
+    mpu.setZAccelOffset(1666);
 
     if (devStatus == 0) {
         // turn on the DMP, now that it's ready
@@ -99,7 +99,12 @@ void IMU::readData() {
             //get Gyro rates
             mpu.dmpGetGyro(gyro, fifoBuffer);
 
-            // get Gravity vector in body axis
+            //Rotation rates conversion in rad/s
+            gyro[0] = gyro[0]*3.14/130;
+            gyro[1] = gyro[1]*3.14/130;
+            gyro[2] = gyro[3]*3.14/130;
+
+            // get Gravity unity vector in body axis
             mpu.dmpGetGravity(&gravity, &q);
 
             // get relative acceleration measured
@@ -110,16 +115,23 @@ void IMU::readData() {
 
             // get acceleration in earth axis
             mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
+
+            //Acceleration conversion in m.s-2
+            for(int i = 0;i<3;i++){
+                aa[i] = aa[i]*9.81/8192;
+                aaReal[i] = aaReal[i]*9.81/8192;
+                aaWorld[i] = aaWorld[i]*9.81/8192;
+            }
         }
     }
 }
 
 void IMU::getQuaternion(float *quat)
 {
-        quat[0] = q.w;
-        quat[1] = q.x;
-        quat[2] = q.y;
-        quat[3] = q.z;
+    quat[0] = q.w;
+    quat[1] = q.x;
+    quat[2] = q.y;
+    quat[3] = q.z;
 }
 
 void IMU::getEulerAngles(float* eulerAngles)

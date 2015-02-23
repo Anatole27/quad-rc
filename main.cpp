@@ -24,13 +24,31 @@ int main()
 
     float attitudeState[4] = {0};
     float attitudeDerivative[4] = {0};
-
-    while(millis() < 1000){
+    Serial.println(F("Start"));
+    while(millis() < 10000){
         sensors->run();
-        sensors->getAttitudeState((float*)attitudeState);
-        sensors->getAttitudeDerivative((float*)attitudeDerivative);
-        Matrix.Print(attitudeState,4,1,"State");
-        Matrix.Print(attitudeDerivative,4,1,"Derivative");
+        Serial.print(sensors->position[0]); Serial.print(F(","));
+        Serial.print(sensors->position[1]); Serial.print(F(","));
+        Serial.print(sensors->position[2]); Serial.print(F(","));
+        Serial.print(sensors->speed[0]); Serial.print(F(","));
+        Serial.print(sensors->speed[1]); Serial.print(F(","));
+        Serial.print(sensors->speed[2]); Serial.print(F(","));
+        Serial.print(sensors->acceleration[0]); Serial.print(F(","));
+        Serial.print(sensors->acceleration[1]); Serial.print(F(","));
+        Serial.print(sensors->acceleration[2]); Serial.print(F(","));
+        Serial.print(sensors->earthAccel[0]); Serial.print(F(","));
+        Serial.print(sensors->earthAccel[1]); Serial.print(F(","));
+        Serial.print(sensors->earthAccel[2]); Serial.print(F(","));
+        Serial.print(sensors->quaternion[0]); Serial.print(F(","));
+        Serial.print(sensors->quaternion[1]); Serial.print(F(","));
+        Serial.print(sensors->quaternion[2]); Serial.print(F(","));
+        Serial.print(sensors->quaternion[3]); Serial.print(F(","));
+        Serial.print(sensors->eulerAngles[0]); Serial.print(F(","));
+        Serial.print(sensors->eulerAngles[1]); Serial.print(F(","));
+        Serial.print(sensors->eulerAngles[2]); Serial.print(F(","));
+        Serial.print(sensors->gyroRates[0]); Serial.print(F(","));
+        Serial.print(sensors->gyroRates[1]); Serial.print(F(","));
+        Serial.println(sensors->gyroRates[2]);
     }
 
 
