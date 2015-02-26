@@ -1,19 +1,13 @@
 To do list :
 
-******************
-*Attitude Manager*
-******************
+AttitudeManager :
+·bool isClose();
 
-bool isClose();
+Motors :
+·void sendMotorOutput();
 
-*********
-*Sensors*
-*********
+RC receiver :
+·Whole class to implement
 
-Calibrate sensors
-
-*******
-*Motor*
-*******
-
-void sendMotorOutput();
+Sensors :
+·Reset gyro path

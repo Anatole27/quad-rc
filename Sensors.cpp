@@ -31,6 +31,7 @@ void Sensors::run()
     imu.getEarthAcceleration((float*)earthAccel);
     imu.getEulerAngles((float*)eulerAngles);
     imu.getGyro((float*)gyroRates);
+    imu.getQuaternion((float*)quaternion);
 }
 
 void Sensors::getAttitudeState(float* attitudeState)

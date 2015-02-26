@@ -115,10 +115,11 @@ void IMU::readData() {
 
 void IMU::getQuaternion(float *quat)
 {
-    quat[0] = q.w;
-    quat[1] = q.x;
-    quat[2] = q.y;
-    quat[3] = q.z;
+// The earth axis in Z pointing up and Y pointing left according to the IMU/DMP. But our system of axis is Z pointing down and Y pointing right.
+    quat[0] = -q.x;
+    quat[1] = q.w;
+    quat[2] = q.z;
+    quat[3] = -q.y;
 }
 
 void IMU::getEulerAngles(float* eulerAngles)
@@ -153,7 +154,8 @@ void IMU::getLinearAcceleration(float *acceleration)
 void IMU::getEarthAcceleration(float *earthAccel)
 {
     //Acceleration conversion in m.s-2
+// We just change z = -z and y = -y to have z pointing down and y pointing right
     earthAccel[0] = (float)aaWorld.x*9.81f/8192;
-    earthAccel[1] = (float)aaWorld.y*9.81f/8192;
-    earthAccel[2] = (float)aaWorld.z*9.81f/8192;
+    earthAccel[1] = -(float)aaWorld.y*9.81f/8192;
+    earthAccel[2] = -(float)aaWorld.z*9.81f/8192;
 }

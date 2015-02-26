@@ -22,17 +22,9 @@ int main()
     attitudeManager = new AttitudeManager();
     sensors = new Sensors();
 
-    float attitudeState[4] = {0};
-    float attitudeDerivative[4] = {0};
     Serial.println(F("Start"));
-    while(millis() < 10000){
+    while(millis() < 100000){
         sensors->run();
-        Serial.print(sensors->position[0]); Serial.print(F(","));
-        Serial.print(sensors->position[1]); Serial.print(F(","));
-        Serial.print(sensors->position[2]); Serial.print(F(","));
-        Serial.print(sensors->speed[0]); Serial.print(F(","));
-        Serial.print(sensors->speed[1]); Serial.print(F(","));
-        Serial.print(sensors->speed[2]); Serial.print(F(","));
         Serial.print(sensors->acceleration[0]); Serial.print(F(","));
         Serial.print(sensors->acceleration[1]); Serial.print(F(","));
         Serial.print(sensors->acceleration[2]); Serial.print(F(","));
@@ -49,6 +41,7 @@ int main()
         Serial.print(sensors->gyroRates[0]); Serial.print(F(","));
         Serial.print(sensors->gyroRates[1]); Serial.print(F(","));
         Serial.println(sensors->gyroRates[2]);
+        delay(0.01);
     }
 
 
