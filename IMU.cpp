@@ -1,7 +1,7 @@
 #include "IMU.h"
 
 IMU::IMU() : mpu(0x69), dmpReady(false), mpuIntStatus(0), devStatus(0),
-    fifoCount(0), q(1,0,0,0), aa(0,0,0), aaReal(0,0,0), aaWorld(0,0,0), gravity(0,0,0)
+    fifoCount(0), q(1,0,0,0), qOffset(1,0,0,0), aa(0,0,0), aaReal(0,0,0), aaWorld(0,0,0), gravity(0,0,0)
 {
     for(int i = 0;i<3;i++){
         euler[i] = 0;
@@ -81,41 +81,48 @@ void IMU::readData() {
         } else if (mpuIntStatus & 0x02) {
             // wait for correct available data length, should be a VERY short wait
             while (fifoCount < packetSize) fifoCount = mpu.getFIFOCount();
-            // read a packet from FIFO
-            mpu.getFIFOBytes(fifoBuffer, packetSize);
-            // track FIFO count here in case there is > 1 packet available
-            // (this lets us immediately read more without waiting for an interrupt)
-            fifoCount -= packetSize;
+
+            //Let's empty this damn fifo
+            while(fifoCount >= packetSize){
+                // read a packet from FIFO
+                mpu.getFIFOBytes(fifoBuffer, packetSize);
+                // track FIFO count here in case there is > 1 packet available
+                // (this lets us immediately read more without waiting for an interrupt)
+                fifoCount -= packetSize;
 
 
-            // display quaternion values in easy matrix form: w x y z
-            mpu.dmpGetQuaternion(&q, fifoBuffer);
+                // display quaternion values in easy matrix form: w x y z
+                mpu.dmpGetQuaternion(&q, fifoBuffer);
 
-            //get EulerAngles phi theta psi
-            mpu.dmpGetEuler(euler, &q);
+                // offset quaternion
+                q = q.getProduct(qOffset);
 
-            //get Gyro rates
-            mpu.dmpGetGyro(gyro, fifoBuffer);
+                //get EulerAngles phi theta psi
+                mpu.dmpGetEuler(euler, &q);
 
-            // get Gravity unity vector in body axis
-            mpu.dmpGetGravity(&gravity, &q);
+                //get Gyro rates
+                mpu.dmpGetGyro(gyro, fifoBuffer);
 
-            // get relative acceleration measured
-            mpu.dmpGetAccel(&aa,fifoBuffer);
+                // get Gravity unity vector in body axis
+                mpu.dmpGetGravity(&gravity, &q);
 
-            // get real acceleration in body axis
-            mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
+                // get relative acceleration measured
+                mpu.dmpGetAccel(&aa,fifoBuffer);
 
-            // get acceleration in earth axis
-            mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
+                // get real acceleration in body axis
+                mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
 
+                // get acceleration in earth axis
+                mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
+
+            }
         }
     }
 }
 
 void IMU::getQuaternion(float *quat)
 {
-// The earth axis in Z pointing up and Y pointing left according to the IMU/DMP. But our system of axis is Z pointing down and Y pointing right.
+    // The earth axis in Z pointing up and Y pointing left according to the IMU/DMP. But our system of axis is Z pointing down and Y pointing right.
     quat[0] = -q.x;
     quat[1] = q.w;
     quat[2] = q.z;
@@ -154,8 +161,13 @@ void IMU::getLinearAcceleration(float *acceleration)
 void IMU::getEarthAcceleration(float *earthAccel)
 {
     //Acceleration conversion in m.s-2
-// We just change z = -z and y = -y to have z pointing down and y pointing right
+    // We just change z = -z and y = -y to have z pointing down and y pointing right
     earthAccel[0] = (float)aaWorld.x*9.81f/8192;
     earthAccel[1] = -(float)aaWorld.y*9.81f/8192;
     earthAccel[2] = -(float)aaWorld.z*9.81f/8192;
+}
+
+void IMU::resetGyroPath()
+{
+    qOffset = q.getConjugate();
 }

@@ -1,6 +1,6 @@
 #include "Sensors.h"
 
-Sensors::Sensors() : imu()
+Sensors::Sensors() : imu(), imuInitialized(false)
 {
     // Initialize variables at 0
     for(int i = 0;i<3;i++){
@@ -16,16 +16,16 @@ Sensors::Sensors() : imu()
         quaternion[i] = 0;
     }
 
-    // Initialize IMU/DMP
-    bool imuInitialized = false;
-    while(!imuInitialized)
-        imuInitialized = imu.initialize();
+    // IMU initialize at the first run. The IMU has to be read frequently so it is only initialized at the last moment
 }
 
 void Sensors::run()
-{// Kalman to implement
-    // Position to update
-    // speed to update
+{
+    // Initialize IMU/DMP at the first run
+    while(!imuInitialized)
+        imuInitialized = imu.initialize();
+
+    // Get data from IMU/DMP
     imu.readData();
     imu.getLinearAcceleration((float*)acceleration);
     imu.getEarthAcceleration((float*)earthAccel);
@@ -49,4 +49,15 @@ void Sensors::getAttitudeDerivative(float* attitudeDerivative)
     attitudeDerivative[1] = gyroRates[0];
     attitudeDerivative[2] = gyroRates[1];
     attitudeDerivative[3] = gyroRates[2];
+}
+
+bool Sensors::endInit()
+{
+    // initialization is finished when the IMU is horizontal
+    if(eulerAngles[0] < ANGLE_THRESHOLD && eulerAngles[1] < ANGLE_THRESHOLD)
+    {
+        imu.resetGyroPath();
+        return true;
+    }
+    else return false;
 }

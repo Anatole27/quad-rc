@@ -3,6 +3,10 @@
 
 #include "IMU.h"
 
+#define GYRO_THRESHOLD 0.01
+#define ANGLE_THRESHOLD 0.05
+
+
 class Sensors
 {
 public :
@@ -11,6 +15,7 @@ public :
     void run();
     void getAttitudeState(float* attitudeState);
     void getAttitudeDerivative(float* attitudeDerivative);
+    bool endInit();
 
 //private :
     IMU imu;
@@ -21,6 +26,7 @@ public :
     float quaternion[4];
     float eulerAngles[3];
     float gyroRates[3];
+    bool imuInitialized;
 };
 
 extern Sensors *sensors;

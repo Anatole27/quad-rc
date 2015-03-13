@@ -2,12 +2,21 @@ To do list :
 
 AttitudeManager :
 ·bool isClose();
+·Get gains from MATLAB
 
 Motors :
-·void sendMotorOutput();
+·void sendMotorOutput(); Calibrate
+Use channel 5 for this
 
 RC receiver :
-·Whole class to implement
+·Manage signal loss
+·ThrottleUp et Down
+·Timing
 
 Sensors :
+·endInit
 ·Reset gyro path
+·Timing
+
+Master :
+·Timing

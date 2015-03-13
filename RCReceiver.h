@@ -33,8 +33,12 @@ public:
     float getPitchCommand(); // Translate pulse into pitch command
     float getRollCommand(); // Translate pulse into roll command
     float getThrottleCommand(); // Translate pulse into throttle command
+    float getChannel5(); // Gives channel5 signal 0-100%
+    float getChannel6(); // Gives channel6 signal 0-100%
     float getAutopilotEnabled(); // Translate pulse into autopilot enabling
     float getAerobaticsEnabled(); // Aerobatics enabling (attitude rate control)
+    bool throttleUp(); // true when throttle is between 90% and 100%
+    bool throttleDown(); // true when throttle is between 0% and 10%
 
 //private:
     unsigned long pulseLength[6]; // Stores every channels signal length

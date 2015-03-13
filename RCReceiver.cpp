@@ -21,6 +21,12 @@ RCReceiver::RCReceiver()
     {
         pinMode(pin[i], INPUT);
     }
+
+    // Reading every channels values
+    for(int i=0;i<6;i++)
+    {
+        run();
+    }
 }
 
 void RCReceiver::run()
@@ -32,29 +38,36 @@ void RCReceiver::run()
 float RCReceiver::getYawCommand()
 {
     float yaw;
-    yaw = YAWMIN + (YAWMAX-YAWMIN)*(float)pulseLength[0]/(PULSEMAX-PULSEMIN);
+    yaw = YAWMIN + (YAWMAX-YAWMIN) * ((float)pulseLength[0]-PULSEMIN) / (PULSEMAX-PULSEMIN);
     return yaw;
 }
 
 float RCReceiver::getPitchCommand()
 {
     float pitch;
-    pitch = PITCHMIN + (PITCHMAX-PITCHMIN)*(float)pulseLength[1]/(PULSEMAX-PULSEMIN);
+    pitch = PITCHMIN + (PITCHMAX-PITCHMIN) * ((float)pulseLength[1]-PULSEMIN) / (PULSEMAX-PULSEMIN);
     return pitch;
 }
 
 float RCReceiver::getRollCommand()
 {
     float roll;
-    roll = ROLLMIN + (ROLLMAX-ROLLMIN)*(float)pulseLength[2]/(PULSEMAX-PULSEMIN);
+    roll = ROLLMIN + (ROLLMAX-ROLLMIN) * ((float)pulseLength[2]-PULSEMIN) / (PULSEMAX-PULSEMIN);
     return roll;
 }
 
 float RCReceiver::getThrottleCommand()
 {
     float throttle;
-    throttle = THROTTLEMIN + (THROTTLEMAX-THROTTLEMIN)*(float)pulseLength[3]/(PULSEMAX-PULSEMIN);
+    throttle = THROTTLEMIN + (THROTTLEMAX-THROTTLEMIN) * ((float)pulseLength[3]-PULSEMIN) / (PULSEMAX-PULSEMIN);
     return throttle;
+}
+
+float RCReceiver::getChannel5()
+{
+    float channel5;
+    channel5 = 100 * ((float)pulseLength[4]-PULSEMIN) / (PULSEMAX-PULSEMIN);
+    return channel5;
 }
 
 float RCReceiver::getAutopilotEnabled()
@@ -65,6 +78,13 @@ float RCReceiver::getAutopilotEnabled()
         return false;
 }
 
+float RCReceiver::getChannel6()
+{
+    float channel6;
+    channel6 = 100 * ((float)pulseLength[5]-PULSEMIN) / (PULSEMAX-PULSEMIN);
+    return channel6;
+}
+
 float RCReceiver::getAerobaticsEnabled()
 {
     if(pulseLength[5] > THRESHOLD)
@@ -73,3 +93,17 @@ float RCReceiver::getAerobaticsEnabled()
         return false;
 }
 
+bool RCReceiver::throttleDown()
+{
+    if(((float)pulseLength[3]-PULSEMIN) < (PULSEMAX-PULSEMIN)/10)
+        return true;
+    else return false;
+}
+
+bool RCReceiver::throttleUp()
+{
+
+    if(((float)pulseLength[3]-PULSEMIN) > (PULSEMAX-PULSEMIN)*9/10)
+        return true;
+    else return false;
+}

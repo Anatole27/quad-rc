@@ -3,10 +3,12 @@
 #include "AttitudeManager.h"
 #include "MatrixMath.h"
 #include "RCReceiver.h"
+#include "Master.h"
 
 AttitudeManager* attitudeManager;
 Sensors* sensors;
 RCReceiver* receiver;
+Master* master;
 
 int main()
 {
@@ -24,19 +26,21 @@ int main()
     attitudeManager = new AttitudeManager();
     sensors = new Sensors();
     receiver = new RCReceiver();
+    master = new Master();
+
+    //Initialization
+    master->init();
 
     Serial.println(F("Start"));
     while(millis() < 100000){
+        master->run();
+        attitudeManager->run();
         receiver->run();
+        sensors->run();
 
-        Serial.print(receiver->pulseLength[0]); Serial.print(F(","));
-        Serial.print(receiver->pulseLength[1]); Serial.print(F(","));
-        Serial.print(receiver->pulseLength[2]); Serial.print(F(","));
-        Serial.print(receiver->pulseLength[3]); Serial.print(F(","));
-        Serial.print(receiver->pulseLength[4]); Serial.print(F(","));
-        Serial.println(receiver->pulseLength[5]);
+        Matrix.Print((float*)attitudeManager->m_reference,4,1,"Reference");
 
-        delay(0.01);
+        delay(10);
     }
 
 

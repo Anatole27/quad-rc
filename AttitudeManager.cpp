@@ -21,10 +21,10 @@ AttitudeManager::AttitudeManager()
     disableIntegral();
 
     // Motors init
-    m_motor1.setPin(4);
-    m_motor2.setPin(5);
-    m_motor3.setPin(6);
-    m_motor4.setPin(7);
+    m_motor1.setPin(MOTORPIN1);
+    m_motor2.setPin(MOTORPIN2);
+    m_motor3.setPin(MOTORPIN3);
+    m_motor4.setPin(MOTORPIN4);
 }
 
 // Public methods
@@ -92,7 +92,7 @@ void AttitudeManager::setPeriod(long period)
 // Private methods
 
 void AttitudeManager::getCommand(float* command)
-// Calculate motor commands (speed^2 with speed in tr/s)
+// Calculate motor commands (speed^2-averagespeed^2 with speeds in tr/s)
 {
     // State, Derivative, Integral and reference
     float state[4] = {0};
@@ -107,7 +107,7 @@ void AttitudeManager::getCommand(float* command)
     getReference((float*) reference);
     Util::compareAttitudes((float*)reference,(float*)state,(float*)error);
 
-    //Following calculation :
+    //Following calculations :
     // Command = Kp*Error + Kv*stateDerivative + Ki*stateIntegral
 
     // proportional = KPosition*error
@@ -137,6 +137,22 @@ void AttitudeManager::sendMotorOutput(float* command)
     m_motor2.setCommand(command[1]);
     m_motor3.setCommand(command[2]);
     m_motor4.setCommand(command[3]);
+}
+
+void AttitudeManager::setMaxPulse()
+{
+    m_motor1.setMaxPulse();
+    m_motor2.setMaxPulse();
+    m_motor3.setMaxPulse();
+    m_motor4.setMaxPulse();
+}
+
+void AttitudeManager::setMinPulse()
+{
+    m_motor1.setMinPulse();
+    m_motor2.setMinPulse();
+    m_motor3.setMinPulse();
+    m_motor4.setMinPulse();
 }
 
 void AttitudeManager::enableIntegral()

@@ -23,6 +23,7 @@ public:
     void getRelativeAcceleration(float* relativeAccel);
     void getLinearAcceleration(float* acceleration);
     void getEarthAcceleration(float* earthAccel);
+    void resetGyroPath();
 
 private :
     MPU6050 mpu;
@@ -34,6 +35,7 @@ private :
     uint8_t fifoBuffer[64]; // FIFO storage buffer
     // orientation/motion vars
     Quaternion q; // [w, x, y, z] quaternion container
+    Quaternion qOffset; // quaternion offset for reset path
     VectorInt16 aa; // [x, y, z] accel sensor measurements
     VectorInt16 aaReal; // [x, y, z] gravity-free accel sensor measurements
     VectorInt16 aaWorld; // [x, y, z] world-frame accel sensor measurements
