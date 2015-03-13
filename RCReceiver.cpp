@@ -7,18 +7,26 @@ RCReceiver::RCReceiver()
         pulseLength[i] = 0;
         pinRead = 0;
     }
+
+    // Setting pin numbering
     pin[0] = PINYAW;
     pin[1] = PINPITCH;
     pin[2] = PINROLL;
     pin[3] = PINTHROTTLE;
     pin[4] = PINAUTOPILOT;
     pin[5] = PINAEROBATICS;
+
+    // pin INPUT enabling
+    for(int i = 0;i<6;i++)
+    {
+        pinMode(pin[i], INPUT);
+    }
 }
 
 void RCReceiver::run()
 {
-    pulseLength[pinRead] = pulseIn(pin[pinRead],HIGH,TIMEOUT);
-    pinRead = (pinRead+1)%6;
+    pulseLength[pinRead] = pulseIn(pin[pinRead],HIGH,TIMEOUT); //pulse length reading (one channel at a time)
+    pinRead = (pinRead+1)%6; // Incrementation of pinRead for next pulse read
 }
 
 float RCReceiver::getYawCommand()

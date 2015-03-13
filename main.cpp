@@ -2,9 +2,11 @@
 #include "Sensors.h"
 #include "AttitudeManager.h"
 #include "MatrixMath.h"
+#include "RCReceiver.h"
 
 AttitudeManager* attitudeManager;
 Sensors* sensors;
+RCReceiver* receiver;
 
 int main()
 {
@@ -21,26 +23,19 @@ int main()
     //Initialisation
     attitudeManager = new AttitudeManager();
     sensors = new Sensors();
+    receiver = new RCReceiver();
 
     Serial.println(F("Start"));
     while(millis() < 100000){
-        sensors->run();
-        Serial.print(sensors->acceleration[0]); Serial.print(F(","));
-        Serial.print(sensors->acceleration[1]); Serial.print(F(","));
-        Serial.print(sensors->acceleration[2]); Serial.print(F(","));
-        Serial.print(sensors->earthAccel[0]); Serial.print(F(","));
-        Serial.print(sensors->earthAccel[1]); Serial.print(F(","));
-        Serial.print(sensors->earthAccel[2]); Serial.print(F(","));
-        Serial.print(sensors->quaternion[0]); Serial.print(F(","));
-        Serial.print(sensors->quaternion[1]); Serial.print(F(","));
-        Serial.print(sensors->quaternion[2]); Serial.print(F(","));
-        Serial.print(sensors->quaternion[3]); Serial.print(F(","));
-        Serial.print(sensors->eulerAngles[0]); Serial.print(F(","));
-        Serial.print(sensors->eulerAngles[1]); Serial.print(F(","));
-        Serial.print(sensors->eulerAngles[2]); Serial.print(F(","));
-        Serial.print(sensors->gyroRates[0]); Serial.print(F(","));
-        Serial.print(sensors->gyroRates[1]); Serial.print(F(","));
-        Serial.println(sensors->gyroRates[2]);
+        receiver->run();
+
+        Serial.print(receiver->pulseLength[0]); Serial.print(F(","));
+        Serial.print(receiver->pulseLength[1]); Serial.print(F(","));
+        Serial.print(receiver->pulseLength[2]); Serial.print(F(","));
+        Serial.print(receiver->pulseLength[3]); Serial.print(F(","));
+        Serial.print(receiver->pulseLength[4]); Serial.print(F(","));
+        Serial.println(receiver->pulseLength[5]);
+
         delay(0.01);
     }
 
