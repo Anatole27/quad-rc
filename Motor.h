@@ -7,7 +7,7 @@
 
 #define MAXPULSE 2000 //Max pulse length (us)
 #define MINPULSE 1000 //Min pulse length (us)
-#define NOMINALSPEED 3000l // Nominal speed when hovering (tr/min)
+#define NOMINALSPEED 5600l // Nominal speed when hovering (tr/min)
 #define MAXSPEED 11000 // tr/min
 #define MINSPEED 0 // tr/min
 
