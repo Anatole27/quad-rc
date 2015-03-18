@@ -14,7 +14,10 @@ void Motor::setCommand(float command)
 //TODO : implement conversion. Reminder : command = n^2 - n0^2 witch n = tr/min
 {
     unsigned long pulse;
-    pulse = (MAXPULSE-MINPULSE)*sqrt(command + NOMINALSPEED*NOMINALSPEED)/(MAXSPEED-MINSPEED);
+    pulse = MINPULSE +
+            (MAXPULSE-MINPULSE)*
+            (sqrt(command + NOMINALSPEED*NOMINALSPEED)-MINSPEED)
+            /(MAXSPEED-MINSPEED);
     pulse = min(MAXPULSE,pulse);
     pulse = max(MINPULSE,pulse);
     m_ESC.writeMicroseconds(pulse);
