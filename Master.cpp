@@ -31,12 +31,12 @@ void Master::init()
             Serial.println(F("ESC Calibration"));
             attitudeManager->setMaxPulse(); // Set maximum length pulse
             while(!receiver->throttleDown()){ // wait for the throttle to go down
-                delay(100);
+                delay(10);
                 receiver->run(); //Read receiver
             }
             Serial.println(F("Throttle Down"));
             attitudeManager->setMinPulse(); // Set minimum length pulse
-            delay(1000); // wait for the ESC to copy correctly
+            delay(3000); // wait for the ESC to copy correctly
             m_initState = IMU_INIT;
             break;
 

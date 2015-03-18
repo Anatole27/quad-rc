@@ -17,6 +17,8 @@ void Motor::setCommand(float command)
     pulse = (MAXPULSE-MINPULSE)*sqrt(command + NOMINALSPEED*NOMINALSPEED)/(MAXSPEED-MINSPEED);
     pulse = min(MAXPULSE,pulse);
     pulse = max(MINPULSE,pulse);
+    Serial.println(command);
+    Serial.println(pulse);
     m_ESC.writeMicroseconds(pulse);
 }
 

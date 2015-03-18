@@ -38,8 +38,6 @@ int main()
         receiver->run();
         sensors->run();
 
-        Matrix.Print((float*)attitudeManager->m_reference,4,1,"Reference");
-
         delay(10);
     }
 
