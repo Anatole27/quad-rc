@@ -31,25 +31,13 @@ int main()
     //Initialization
     master->init();
 
-    Serial.println(F("Start"));
-    while(millis() < 100000){
+    while(true){
         master->run();
         attitudeManager->run();
         receiver->run();
         sensors->run();
-
         delay(10);
-    }
-
-
-    //Fin de test
-    Serial.println(F("Test termined"));
-    Serial.end();
-    while(true){
-        digitalWrite(led,HIGH);
-        delay(100);
-        digitalWrite(led,LOW);
-        delay(100);
+        // Serial output from attitudeManager SendOutPut and Motor.sendOutput
     }
 }
 

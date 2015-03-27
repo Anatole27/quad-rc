@@ -37,6 +37,9 @@ AttitudeManager::AttitudeManager()
     m_motor2.setPin(MOTORPIN2);
     m_motor3.setPin(MOTORPIN3);
     m_motor4.setPin(MOTORPIN4);
+
+    // Boolean init
+    managerEnabled = false;
 }
 
 // Public methods
@@ -44,14 +47,17 @@ AttitudeManager::AttitudeManager()
 void AttitudeManager::run()
 // Default running
 {
-    // Update integral if the integral action is enabled
-    if(integralEnabled()){
-        updateIntegral();
-    }
+    if(managerEnabled)
+    {
+        // Update integral if the integral action is enabled
+        if(integralEnabled()){
+            updateIntegral();
+        }
 
-    float command[4] = {0};
-    getCommand((float*) command);
-    sendMotorOutput((float*) command);
+        float command[4] = {0};
+        getCommand((float*) command);
+        sendMotorOutput((float*) command);
+    }
 }
 
 bool AttitudeManager::periodElapsed()
@@ -149,6 +155,7 @@ void AttitudeManager::sendMotorOutput(float* command)
     m_motor2.setCommand(command[1]);
     m_motor3.setCommand(command[2]);
     m_motor4.setCommand(command[3]);
+    Serial.println();
 }
 
 void AttitudeManager::setMaxPulse()
@@ -222,4 +229,22 @@ bool AttitudeManager::isClose()
 //TODO : Implementation of isClose()
 {
     return false;
+}
+
+void AttitudeManager::enable()
+{
+    managerEnabled = true;
+}
+
+void AttitudeManager::disable()
+{
+    managerEnabled = false;
+}
+
+void AttitudeManager::setNominalSpeed(long nominalSpeed)
+{
+    m_motor1.setNominalSpeed(nominalSpeed);
+    m_motor2.setNominalSpeed(nominalSpeed);
+    m_motor3.setNominalSpeed(nominalSpeed);
+    m_motor4.setNominalSpeed(nominalSpeed);
 }

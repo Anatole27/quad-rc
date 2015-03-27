@@ -36,14 +36,14 @@ bool IMU::initialize()
 
     if (devStatus == 0) {
         // turn on the DMP, now that it's ready
-        Serial.println(F("Enabling DMP..."));
+        //Serial.println(F("Enabling DMP..."));
         mpu.setDMPEnabled(true);
         // enable Arduino interrupt detection
-        Serial.println(F("Enabling interrupt detection (Arduino external interrupt 0)..."));
+        //Serial.println(F("Enabling interrupt detection (Arduino external interrupt 0)..."));
         attachInterrupt(0, &dmpDataReady, RISING);
         mpuIntStatus = mpu.getIntStatus();
         // set our DMP Ready flag so the main loop() function knows it's okay to use it
-        Serial.println(F("DMP ready! Waiting for first interrupt..."));
+        //Serial.println(F("DMP ready! Waiting for first interrupt..."));
         dmpReady = true;
         // get expected DMP packet size for later comparison
         packetSize = mpu.dmpGetFIFOPacketSize();
@@ -65,7 +65,7 @@ bool IMU::initialize()
 // Read the data from DMP
 void IMU::readData() {
     // Empty the buffer to avoid overflow
-    while(mpuInterrupt || fifoCount >= packetSize)
+    if(mpuInterrupt)
     {
         //reset interrupt
         mpuInterrupt = false;
@@ -89,36 +89,36 @@ void IMU::readData() {
                 // track FIFO count here in case there is > 1 packet available
                 // (this lets us immediately read more without waiting for an interrupt)
                 fifoCount -= packetSize;
-
-
-                // display quaternion values in easy matrix form: w x y z
-                mpu.dmpGetQuaternion(&q, fifoBuffer);
-
-                // offset quaternion
-                q = q.getProduct(qOffset);
-
-                //get EulerAngles phi theta psi
-                mpu.dmpGetEuler(euler, &q);
-
-                //get Gyro rates
-                mpu.dmpGetGyro(gyro, fifoBuffer);
-
-                // get Gravity unity vector in body axis
-                mpu.dmpGetGravity(&gravity, &q);
-
-                // get relative acceleration measured
-                mpu.dmpGetAccel(&aa,fifoBuffer);
-
-                // get real acceleration in body axis
-                mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
-
-                // get acceleration in earth axis
-                mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
-
             }
+
+            // display quaternion values in easy matrix form: w x y z
+            mpu.dmpGetQuaternion(&q, fifoBuffer);
+
+            // offset quaternion
+            q = q.getProduct(qOffset);
+
+            //get EulerAngles phi theta psi
+            mpu.dmpGetEuler(euler, &q);
+
+            //get Gyro rates
+            mpu.dmpGetGyro(gyro, fifoBuffer);
+
+            // get Gravity unity vector in body axis
+            mpu.dmpGetGravity(&gravity, &q);
+
+            // get relative acceleration measured
+            mpu.dmpGetAccel(&aa,fifoBuffer);
+
+            // get real acceleration in body axis
+            mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
+
+            // get acceleration in earth axis
+            mpu.dmpGetLinearAccelInWorld(&aaWorld, &aaReal, &q);
+
         }
     }
 }
+
 
 void IMU::getQuaternion(float *quat)
 {

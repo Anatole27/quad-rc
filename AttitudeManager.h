@@ -27,6 +27,9 @@ public:
     void getReference(float *reference);
     void setMaxPulse();
     void setMinPulse();
+    void enable();
+    void disable();
+    void setNominalSpeed(long nominalSpeed);
 
 
 //private:
@@ -41,6 +44,7 @@ public:
     Motor m_motor2; // Aft-Right
     Motor m_motor3; // Aft-Left
     Motor m_motor4; // Fore-left
+    bool managerEnabled;
 
     // PID gains
     float m_KPosition[4][4];

@@ -22,8 +22,10 @@ Sensors::Sensors() : imu(), imuInitialized(false)
 void Sensors::run()
 {
     // Initialize IMU/DMP at the first run
-    while(!imuInitialized)
+    while(!imuInitialized){
         imuInitialized = imu.initialize();
+        timeStart = millis();
+    }
 
     // Get data from IMU/DMP
     imu.readData();
@@ -36,10 +38,10 @@ void Sensors::run()
 
 void Sensors::getAttitudeState(float* attitudeState)
 {
-    attitudeState[0] = position[2];
-    attitudeState[1] = eulerAngles[0];
-    attitudeState[2] = eulerAngles[1];
-    attitudeState[3] = eulerAngles[2];
+    attitudeState[0] = 0;//position[2];
+    attitudeState[1] = 0;//eulerAngles[0];
+    attitudeState[2] = 0;//eulerAngles[1];
+    attitudeState[3] = 0;//eulerAngles[2];
 }
 
 
@@ -51,12 +53,18 @@ void Sensors::getAttitudeDerivative(float* attitudeDerivative)
     attitudeDerivative[3] = gyroRates[2];
 }
 
+void Sensors::resetGyroPath()
+{
+    imu.resetGyroPath();
+    Serial.println(F("Reset IMU"));
+}
+
 bool Sensors::endInit()
 {
     // initialization is finished when the IMU is horizontal
-    if(eulerAngles[0] < ANGLE_THRESHOLD && eulerAngles[1] < ANGLE_THRESHOLD)
+    if(millis()-timeStart > INIT_TIME)
     {
-        imu.resetGyroPath();
+        resetGyroPath();
         return true;
     }
     else return false;

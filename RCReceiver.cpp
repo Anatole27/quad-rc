@@ -60,19 +60,21 @@ float RCReceiver::getThrottleCommand()
 {
     float throttle;
     throttle = THROTTLEMIN + (THROTTLEMAX-THROTTLEMIN) * ((float)pulseLength[3]-PULSEMIN) / (PULSEMAX-PULSEMIN);
-    return throttle;
+    return -throttle; // Z downward
 }
 
 float RCReceiver::getChannel5()
 {
     float channel5;
-    channel5 = 100 * ((float)pulseLength[4]-PULSEMIN) / (PULSEMAX-PULSEMIN);
+    channel5 = 100 * ((float)pulseLength[5]-PULSEMIN) / (PULSEMAX-PULSEMIN);
+    channel5 = max(channel5,0);
+    channel5 = min(channel5,100);
     return channel5;
 }
 
 float RCReceiver::getAutopilotEnabled()
 {
-    if(pulseLength[4] > THRESHOLD)
+    if(pulseLength[5] > THRESHOLD)
         return true;
     else
         return false;
@@ -81,13 +83,15 @@ float RCReceiver::getAutopilotEnabled()
 float RCReceiver::getChannel6()
 {
     float channel6;
-    channel6 = 100 * ((float)pulseLength[5]-PULSEMIN) / (PULSEMAX-PULSEMIN);
+    channel6 = 100 * ((float)pulseLength[4]-PULSEMIN) / (PULSEMAX-PULSEMIN);
+    channel6 = max(channel6,0);
+    channel6 = min(channel6,100);
     return channel6;
 }
 
 float RCReceiver::getAerobaticsEnabled()
 {
-    if(pulseLength[5] > THRESHOLD)
+    if(pulseLength[4] > THRESHOLD)
         return true;
     else
         return false;
@@ -106,4 +110,14 @@ bool RCReceiver::throttleUp()
     if(((float)pulseLength[3]-PULSEMIN) > (PULSEMAX-PULSEMIN)*9/10)
         return true;
     else return false;
+}
+
+bool RCReceiver::signalReceived()
+{
+    for(int i = 0; i<6;i++)
+    {
+        if(pulseLength[i] == 0)
+            return false;
+    }
+    return true;
 }

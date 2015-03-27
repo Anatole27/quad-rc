@@ -12,7 +12,8 @@
 #define IMU_INIT 3
 #define END_INIT 4
 #define FLY_STATE 5
-#define SIGNAL_LOST 5
+#define LANDING 6
+#define SIGNAL_LOST 7
 
 class Master
 {

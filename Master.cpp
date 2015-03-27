@@ -54,41 +54,61 @@ void Master::init()
             // Go to Fly state
         case IMU_INIT :
             sensors->run();
-            Serial.print(sensors->eulerAngles[0]); Serial.print(F(","));
-            Serial.print(sensors->eulerAngles[1]); Serial.print(F(","));
-            Serial.print(sensors->eulerAngles[2]); Serial.print(F(","));
-            Serial.print(sensors->gyroRates[0]); Serial.print(F(","));
-            Serial.print(sensors->gyroRates[1]); Serial.print(F(","));
-            Serial.println(sensors->gyroRates[2]);
             if(sensors->endInit())
             {
                 m_initState = END_INIT;
-                Serial.println(F("End Init"));
             }
+            Serial.println(millis());
             break;
 
         }
         delay(1);
     }
+    attitudeManager->enable();
 }
 
 void Master::run()
 {
+    float reference[4] = {0};
+    float state[4] = {0};
+    long nominalSpeed;
+
     // Stateflow
     switch(m_state){
 
     case FLY_STATE :
-        // Read RX
-        float reference[4] = {0};
-        float state[4] = {0};
         sensors->getAttitudeState(state);
-        reference[0] = state[0] + receiver->getThrottleCommand(); // Here getTHrottleCOmmand gives a z increment
-        reference[1] = receiver->getRollCommand();
-        reference[2] = receiver->getPitchCommand();
-        reference[3] = receiver->getYawCommand();
-
+        // Read RX
+        if(receiver->signalReceived()){ // Only if the TX signal is correctly received
+            reference[0] = state[0] + receiver->getThrottleCommand(); // Here getTHrottleCOmmand gives a z increment
+            reference[1] = receiver->getRollCommand();
+            reference[2] = receiver->getPitchCommand();
+            reference[3] = state[3] + receiver->getYawCommand();
+            nominalSpeed = receiver->getChannel5()*56;
+        }
+        else // If error with signal, stay still
+        {
+            Serial.println(F("Signal error"));
+            Matrix.Copy(state,4,1,reference);
+        }
         // Set reference for attitudeManager
         attitudeManager->setReference(reference); //Update reference
+        attitudeManager->setNominalSpeed(nominalSpeed);
+
+        if(receiver->throttleDown()){
+            attitudeManager->disable();
+            attitudeManager->setMinPulse();
+            m_state = LANDING;
+            Serial.println(F("Landing"));
+        }
+        break;
+
+    case LANDING :
+        if(!receiver->throttleDown()){
+            attitudeManager->enable();
+            m_state = FLY_STATE;
+            Serial.println(F("Flight"));
+        }
         break;
     }
 }
