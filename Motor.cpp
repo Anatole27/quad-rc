@@ -1,11 +1,11 @@
 #include "Motor.h"
 
-Motor::Motor() : m_pin(0),m_nominalSpeed(DEFAULTNOMINALSPEED)
+Motor::Motor() : m_pin(0),m_nominalSpeed(DEFAULTNOMINALSPEED),m_pulse(1000)
 {
     m_ESC.attach(6);
 }
 
-Motor::Motor(int pin) : m_nominalSpeed(DEFAULTNOMINALSPEED)
+Motor::Motor(int pin) : m_nominalSpeed(DEFAULTNOMINALSPEED),m_pulse(1000)
 {
     m_pin = pin;
     m_ESC.attach(pin);
@@ -14,15 +14,13 @@ Motor::Motor(int pin) : m_nominalSpeed(DEFAULTNOMINALSPEED)
 void Motor::setCommand(float command)
 //TODO : implement conversion. Reminder : command = n^2 - n0^2 witch n = tr/min
 {
-    unsigned long pulse;
-    pulse = MINPULSE +
+    m_pulse = MINPULSE +
             (MAXPULSE-MINPULSE)*
             (sqrt(abs(command + m_nominalSpeed*m_nominalSpeed))-MINSPEED)
             /(MAXSPEED-MINSPEED);
-    pulse = min(MAXPULSE,pulse);
-    pulse = max(MINPULSE,pulse);
-    Serial.print(pulse);
-    m_ESC.writeMicroseconds(pulse);
+    m_pulse = min(MAXPULSE,m_pulse);
+    m_pulse = max(MINPULSE,m_pulse);
+    m_ESC.writeMicroseconds(m_pulse);
 }
 
 void Motor::setMaxPulse()

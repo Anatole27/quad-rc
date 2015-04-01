@@ -58,7 +58,6 @@ void Master::init()
             {
                 m_initState = END_INIT;
             }
-            Serial.println(millis());
             break;
 
         }
@@ -84,22 +83,20 @@ void Master::run()
             reference[1] = receiver->getRollCommand();
             reference[2] = receiver->getPitchCommand();
             reference[3] = state[3] + receiver->getYawCommand();
-            nominalSpeed = receiver->getChannel5()*56;
         }
         else // If error with signal, stay still
         {
-            Serial.println(F("Signal error"));
+            //Serial.println(F("Signal error"));
             Matrix.Copy(state,4,1,reference);
         }
         // Set reference for attitudeManager
         attitudeManager->setReference(reference); //Update reference
-        attitudeManager->setNominalSpeed(nominalSpeed);
 
         if(receiver->throttleDown()){
             attitudeManager->disable();
             attitudeManager->setMinPulse();
             m_state = LANDING;
-            Serial.println(F("Landing"));
+            //Serial.println(F("Landing"));
         }
         break;
 
@@ -107,7 +104,7 @@ void Master::run()
         if(!receiver->throttleDown()){
             attitudeManager->enable();
             m_state = FLY_STATE;
-            Serial.println(F("Flight"));
+            //Serial.println(F("Flight"));
         }
         break;
     }

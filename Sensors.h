@@ -27,8 +27,8 @@ public :
     float acceleration[3];
     float earthAccel[3];
     float quaternion[4];
-    float eulerAngles[3];
-    float gyroRates[3];
+    float eulerAngles[3]; // phi, theta, psi
+    float gyroRates[3]; // p,q,r
     bool imuInitialized;
     long timeStart;
 };

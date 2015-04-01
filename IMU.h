@@ -18,7 +18,7 @@ public:
     bool initialize();
     void readData();
     void getQuaternion(float* quat);
-    void getEulerAngles(float* eulerAngles);
+    void getEulerAngles(float* eulerAngles); // phi,theta,psi
     void getGyro(float* gyroRates);
     void getRelativeAcceleration(float* relativeAccel);
     void getLinearAcceleration(float* acceleration);

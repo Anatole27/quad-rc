@@ -31,13 +31,27 @@ int main()
     //Initialization
     master->init();
 
+    float att[4] = {0};
+    float deriv[4] = {0};
+    Serial.println(F("Start"));
     while(true){
         master->run();
         attitudeManager->run();
         receiver->run();
         sensors->run();
-        delay(10);
-        // Serial output from attitudeManager SendOutPut and Motor.sendOutput
+        sensors->getAttitudeState(att);
+        sensors->getAttitudeDerivative(deriv);
+        Serial.print(millis()); Serial.print(F(","));
+        Serial.print(att[1]); Serial.print(F(","));
+        Serial.print(att[2]); Serial.print(F(","));
+        Serial.print(att[3]); Serial.print(F(","));
+        Serial.print(deriv[1]); Serial.print(F(","));
+        Serial.print(deriv[2]); Serial.print(F(","));
+        Serial.print(deriv[3]); Serial.print(F(","));
+        Serial.print(attitudeManager->m_motor1.m_pulse); Serial.print(F(","));
+        Serial.print(attitudeManager->m_motor2.m_pulse); Serial.print(F(","));
+        Serial.print(attitudeManager->m_motor3.m_pulse); Serial.print(F(","));
+        Serial.println(attitudeManager->m_motor4.m_pulse);
     }
 }
 

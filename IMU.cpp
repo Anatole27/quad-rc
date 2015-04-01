@@ -99,6 +99,9 @@ void IMU::readData() {
 
             //get EulerAngles phi theta psi
             mpu.dmpGetEuler(euler, &q);
+            float phi = euler[2];
+            euler[2] = euler[0]; // Psi
+            euler[0] = phi; // Theta
 
             //get Gyro rates
             mpu.dmpGetGyro(gyro, fifoBuffer);

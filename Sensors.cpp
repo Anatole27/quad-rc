@@ -38,10 +38,10 @@ void Sensors::run()
 
 void Sensors::getAttitudeState(float* attitudeState)
 {
-    attitudeState[0] = 0;//position[2];
-    attitudeState[1] = 0;//eulerAngles[0];
-    attitudeState[2] = 0;//eulerAngles[1];
-    attitudeState[3] = 0;//eulerAngles[2];
+    attitudeState[0] = position[2];
+    attitudeState[1] = eulerAngles[0];
+    attitudeState[2] = eulerAngles[1];
+    attitudeState[3] = eulerAngles[2];
 }
 
 

@@ -7,7 +7,7 @@
 
 #define MAXPULSE 2000 //Max pulse length (us)
 #define MINPULSE 1000 //Min pulse length (us)
-#define DEFAULTNOMINALSPEED 5600l // Nominal speed when hovering (tr/min)
+#define DEFAULTNOMINALSPEED 4200l // Nominal speed when hovering (tr/min)
 #define MAXSPEED 11000 // tr/min
 #define MINSPEED 0 // tr/min
 
@@ -30,6 +30,7 @@ public :
     Servo m_ESC;
     int m_pin;
     long m_nominalSpeed;
+    unsigned long m_pulse;
 };
 
 #endif
