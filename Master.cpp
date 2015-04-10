@@ -37,6 +37,8 @@ void Master::init()
             Serial.println(F("Throttle Down"));
             attitudeManager->setMinPulse(); // Set minimum length pulse
             delay(3000); // wait for the ESC to copy correctly
+//            for(int i = 0;i<4;i++)
+//                attitudeManager->testMotor(i);
             m_initState = IMU_INIT;
             break;
 
@@ -69,8 +71,20 @@ void Master::init()
 void Master::run()
 {
     float reference[4] = {0};
+    attitudeManager->getReference(reference);
     float state[4] = {0};
     long nominalSpeed;
+
+    //    sensors->alpha_angle = receiver->getChannel5()*(0.9-0.5)/100+0.5;
+    //    sensors->alpha_gyro = receiver->getChannel6()*(0.9-0.5)/100+0.5;
+//    float Kp[4] = {0};
+//    float Kv[4] = {0};
+//    Kp[1] = receiver->getChannel5()*2*2044000.f/100;
+//    Kv[1] = receiver->getChannel6()*2*1164000.f/100;
+//    Kp[2] = Kp[1];
+//    Kv[2] = Kv[1];
+//    attitudeManager->setKPosition(Kp);
+//    attitudeManager->setKSpeed(Kv);
 
     // Stateflow
     switch(m_state){
@@ -82,7 +96,9 @@ void Master::run()
             reference[0] = state[0] + receiver->getThrottleCommand(); // Here getTHrottleCOmmand gives a z increment
             reference[1] = receiver->getRollCommand();
             reference[2] = receiver->getPitchCommand();
-            reference[3] = state[3] + receiver->getYawCommand();
+            float yawCommand = receiver->getYawCommand();
+            if(abs(yawCommand)*10 > YAWMAX)
+            reference[3] = state[3] + yawCommand;
         }
         else // If error with signal, stay still
         {

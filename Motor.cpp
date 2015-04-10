@@ -25,11 +25,13 @@ void Motor::setCommand(float command)
 
 void Motor::setMaxPulse()
 {
+    m_pulse = MAXPULSE;
     m_ESC.writeMicroseconds(MAXPULSE);
 }
 
 void Motor::setMinPulse()
 {
+    m_pulse = MINPULSE;
     m_ESC.writeMicroseconds(MINPULSE);
 }
 

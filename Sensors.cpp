@@ -1,6 +1,6 @@
 #include "Sensors.h"
 
-Sensors::Sensors() : imu(), imuInitialized(false)
+Sensors::Sensors() : imu(), imuInitialized(false), alpha_angle(0), alpha_gyro(ALPHA_INIT)
 {
     // Initialize variables at 0
     for(int i = 0;i<3;i++){
@@ -28,12 +28,24 @@ void Sensors::run()
     }
 
     // Get data from IMU/DMP
+    float meas[6] = {0};
     imu.readData();
-    imu.getLinearAcceleration((float*)acceleration);
-    imu.getEarthAcceleration((float*)earthAccel);
-    imu.getEulerAngles((float*)eulerAngles);
-    imu.getGyro((float*)gyroRates);
-    imu.getQuaternion((float*)quaternion);
+    imu.getEulerAngles((float*)meas);
+    imu.getGyro((float*)meas + 3);
+
+    // alpha Filter
+    float state[6] = {0};
+    getEulerAngles(state);
+    getGyroRates(state + 3);
+    // state = alpha*state + (1-alpha)*meas; alpha few with few noise
+    Matrix.Scale((float*)state , 3 , 1 , alpha_angle);
+    Matrix.Scale((float*)state+3 , 3 , 1 , alpha_gyro);
+    Matrix.Scale((float*)meas , 3 , 1 , 1-alpha_angle);
+    Matrix.Scale((float*)meas+3 , 3 , 1 , 1-alpha_gyro);
+    Matrix.Add((float*)state,(float*)meas,6,1,(float*)state);
+
+    Matrix.Copy((float*)state,3,1,(float*)eulerAngles);
+    Matrix.Copy((float*)state+3,3,1,(float*)gyroRates);
 }
 
 void Sensors::getAttitudeState(float* attitudeState)
@@ -53,9 +65,21 @@ void Sensors::getAttitudeDerivative(float* attitudeDerivative)
     attitudeDerivative[3] = gyroRates[2];
 }
 
+void Sensors::getEulerAngles(float* euler)
+{
+    Matrix.Copy(eulerAngles,3,1,euler);
+}
+
+void Sensors::getGyroRates(float* gyro)
+{
+    Matrix.Copy(gyroRates,3,1,gyro);
+}
+
 void Sensors::resetGyroPath()
 {
+    // IMU reset
     imu.resetGyroPath();
+
     Serial.println(F("Reset IMU"));
 }
 

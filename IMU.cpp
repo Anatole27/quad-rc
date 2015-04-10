@@ -95,13 +95,14 @@ void IMU::readData() {
             mpu.dmpGetQuaternion(&q, fifoBuffer);
 
             // offset quaternion
-            q = q.getProduct(qOffset);
+            q = qOffset.getProduct(q);
 
             //get EulerAngles phi theta psi
             mpu.dmpGetEuler(euler, &q);
             float phi = euler[2];
-            euler[2] = euler[0]; // Psi
-            euler[0] = phi; // Theta
+            euler[2] = -euler[0]; // Psi
+            euler[0] = -phi; // Phi
+            euler[1] = -euler[1]; // Theta
 
             //get Gyro rates
             mpu.dmpGetGyro(gyro, fifoBuffer);

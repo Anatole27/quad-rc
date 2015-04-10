@@ -19,9 +19,9 @@ public:
 
     void run(); // update command/control
     bool periodElapsed(); // True if period since last execution elapsed. Reinitialize automatically
-    void setKPosition(float* KPosition); // Position gains
-    void setKSpeed(float* KSpeed); // Speed gains
-    void setKIntegral(float* KIntegral); // Integral gains
+    void setKPosition(float* KP); // Position gains
+    void setKSpeed(float* KS); // Speed gains
+    void setKIntegral(float* KI); // Integral gains
     void setReference(float* reference); // Reference : z,phi,theta,psi (roll,pitch,yaw)
     void setPeriod(long period); // Period of run execution
     void getReference(float *reference);
@@ -30,6 +30,9 @@ public:
     void enable();
     void disable();
     void setNominalSpeed(long nominalSpeed);
+    void testMotor(int i);
+    void getKPosition(float* Kp);
+    void getKSpeed(float* Kv);
 
 
 //private:

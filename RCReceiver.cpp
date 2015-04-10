@@ -60,7 +60,7 @@ float RCReceiver::getThrottleCommand()
 {
     float throttle;
     throttle = THROTTLEMIN + (THROTTLEMAX-THROTTLEMIN) * ((float)pulseLength[3]-PULSEMIN) / (PULSEMAX-PULSEMIN);
-    return -throttle; // Z downward
+    return throttle;
 }
 
 float RCReceiver::getChannel5()

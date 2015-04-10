@@ -10,14 +10,14 @@
 #define PINAUTOPILOT 3
 #define PINAEROBATICS 4
 
-#define YAWMIN -0.5f
-#define YAWMAX 0.5f
-#define PITCHMIN -0.79f // pi/4
-#define PITCHMAX 0.79f
-#define ROLLMIN -0.79f
-#define ROLLMAX 0.79f
-#define THROTTLEMIN -1.0f
-#define THROTTLEMAX 1.0f
+#define YAWMIN -2.f
+#define YAWMAX 2.f
+#define PITCHMIN 0.4f // pi/4
+#define PITCHMAX -0.4f
+#define ROLLMIN -0.4f
+#define ROLLMAX 0.4f
+#define THROTTLEMIN 1.0f
+#define THROTTLEMAX -1.0f
 #define THRESHOLD 950 // autopilot and aerobatics threshold in micro seconds
 #define PULSEMIN 870 // minimum pulse length in us
 #define PULSEMAX 1730 // minimum pulse length in us

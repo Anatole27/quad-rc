@@ -7,24 +7,13 @@ AttitudeManager::AttitudeManager()
     m_period = 50; // milliseconds
 
     // Gain init
-    float KPosition[4][4] = {
-        {-3546682,   -13316180,    13316180,    43417559},
-        {-3546682,   -13316180,   -13316180,   -43417559},
-        {-3546682,    13316180,    13316180,    43417559},
-        {-3546682,    13316180,   -13316180,   -43417559}
-    };
+    float KP[4] = {3546682.f,   5110000.f,   5110000.f,    51100000.f};
+    float KS[4] = {6770939.f,    2328000.f,    2328000.f,   4656000.f};
+    float KI[4] = {0};
 
-    float KSpeed[4][4] = {
-        {6770939,    12999128,   -12999128,   -82888068},
-        {6770939,    12999128,    12999128,    82888068},
-        {6770939,   -12999128,   -12999128,   -82888068},
-        {6770939,   -12999128,    12999128,    82888068}
-    };
-
-    float KIntegral[4][4] = {0};
-    setKPosition((float*) KPosition);
-    setKSpeed((float*) KSpeed);
-    setKIntegral((float*) KIntegral);
+    setKPosition((float*) KP);
+    setKSpeed((float*) KS);
+    setKIntegral((float*) KI);
 
     // Reference & integral init
     float reference[4] = {0};
@@ -72,22 +61,52 @@ bool AttitudeManager::periodElapsed()
         return false;
 }
 
-void AttitudeManager::setKPosition(float* KPosition)
+void AttitudeManager::setKPosition(float* KP)
 // Proportional gains
 {
-    Matrix.Copy(KPosition,4,4,(float*)m_KPosition);
+    float KPosition[4][4] = {
+        {-1,   -1,   1,    1},
+        {-1,   -1,   -1,   -1},
+        {-1,   1,    -1,    1},
+        {-1,   1,    1,   -1}};
+
+    for(int i = 0; i< 4; i++)
+        for(int j = 0; j<4; j++)
+            KPosition[i][j] = KPosition[i][j]*KP[j];
+
+    Matrix.Copy((float*)KPosition,4,4,(float*)m_KPosition);
 }
 
-void AttitudeManager::setKSpeed(float* KSpeed)
+void AttitudeManager::setKSpeed(float* KS)
 // Derivative gains
 {
-    Matrix.Copy(KSpeed,4,4,(float*)m_KSpeed);
+    float KSpeed[4][4] = {
+        {-1,   1,   -1,   -1},
+        {-1,   1,   1,   1},
+        {-1,   -1,  1,   -1},
+        {-1,   -1,  -1,   1}};
+
+    for(int i = 0; i< 4; i++)
+        for(int j = 0; j<4; j++)
+            KSpeed[i][j] = KSpeed[i][j]*KS[j];
+
+    Matrix.Copy((float*)KSpeed,4,4,(float*)m_KSpeed);
 }
 
-void AttitudeManager::setKIntegral(float* KIntegral)
+void AttitudeManager::setKIntegral(float* KI)
 // Integral gains
 {
-    Matrix.Copy(KIntegral,4,4,(float*)m_KIntegral);
+    float KIntegral[4][4] = {
+        {-1,   -1,   1,    1},
+        {-1,   -1,   -1,   -1},
+        {-1,   1,    -1,    1},
+        {-1,   1,    1,   -1}};
+
+    for(int i = 0; i< 4; i++)
+        for(int j = 0; j<4; j++)
+            KIntegral[i][j] = KIntegral[i][j]*KI[j];
+
+    Matrix.Copy((float*)KIntegral,4,4,(float*)m_KIntegral);
 }
 
 void AttitudeManager::setReference(float* reference)
@@ -155,7 +174,6 @@ void AttitudeManager::sendMotorOutput(float* command)
     m_motor2.setCommand(command[1]);
     m_motor3.setCommand(command[2]);
     m_motor4.setCommand(command[3]);
-    Serial.println();
 }
 
 void AttitudeManager::setMaxPulse()
@@ -164,6 +182,32 @@ void AttitudeManager::setMaxPulse()
     m_motor2.setMaxPulse();
     m_motor3.setMaxPulse();
     m_motor4.setMaxPulse();
+}
+
+void AttitudeManager::testMotor(int i)
+{
+    Motor* motor;
+    switch(i){
+    case 0:
+        motor = &m_motor1;
+        break;
+    case 1:
+        motor = &m_motor2;
+        break;
+    case 2:
+        motor = &m_motor3;
+        break;
+    case 3:
+        motor = &m_motor4;
+        break;
+    default:
+        return;
+    }
+
+    motor->setMaxPulse();
+    delay(200);
+    motor->setMinPulse();
+    delay(800);
 }
 
 void AttitudeManager::setMinPulse()
@@ -247,4 +291,14 @@ void AttitudeManager::setNominalSpeed(long nominalSpeed)
     m_motor2.setNominalSpeed(nominalSpeed);
     m_motor3.setNominalSpeed(nominalSpeed);
     m_motor4.setNominalSpeed(nominalSpeed);
+}
+
+void AttitudeManager::getKPosition(float *Kp)
+{
+    Matrix.Copy((float*)m_KPosition,4,4,Kp);
+}
+
+void AttitudeManager::getKSpeed(float *Kv)
+{
+    Matrix.Copy((float*)m_KSpeed,4,4,Kv);
 }
