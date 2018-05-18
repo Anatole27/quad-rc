@@ -1,0 +1,64 @@
+src/Master.o: src/Master.cpp src/Master.h \
+ /usr/share/arduino/hardware/arduino/cores/arduino/Arduino.h \
+ /usr/share/arduino/hardware/arduino/cores/arduino/binary.h \
+ /usr/share/arduino/hardware/arduino/cores/arduino/WCharacter.h \
+ /usr/share/arduino/hardware/arduino/cores/arduino/WString.h \
+ /usr/share/arduino/hardware/arduino/cores/arduino/HardwareSerial.h \
+ /usr/share/arduino/hardware/arduino/cores/arduino/Stream.h \
+ /usr/share/arduino/hardware/arduino/cores/arduino/Print.h \
+ /usr/share/arduino/hardware/arduino/cores/arduino/Printable.h \
+ /usr/share/arduino/hardware/arduino/cores/arduino/new.h \
+ /usr/share/arduino/hardware/arduino/variants/standard/pins_arduino.h \
+ src/AttitudeManager.h src/Util.h libs/MatrixMath/MatrixMath.h \
+ src/Motor.h /usr/share/arduino/libraries/Servo/Servo.h src/Sensors.h \
+ src/IMU.h libs/I2Cdev/I2Cdev.h /usr/share/arduino/libraries/Wire/Wire.h \
+ /usr/share/arduino/hardware/arduino/cores/arduino/Stream.h \
+ libs/MPU6050/helper_3dmath.h libs/MPU6050/MPU6050.h src/RCReceiver.h
+
+src/Master.h:
+
+/usr/share/arduino/hardware/arduino/cores/arduino/Arduino.h:
+
+/usr/share/arduino/hardware/arduino/cores/arduino/binary.h:
+
+/usr/share/arduino/hardware/arduino/cores/arduino/WCharacter.h:
+
+/usr/share/arduino/hardware/arduino/cores/arduino/WString.h:
+
+/usr/share/arduino/hardware/arduino/cores/arduino/HardwareSerial.h:
+
+/usr/share/arduino/hardware/arduino/cores/arduino/Stream.h:
+
+/usr/share/arduino/hardware/arduino/cores/arduino/Print.h:
+
+/usr/share/arduino/hardware/arduino/cores/arduino/Printable.h:
+
+/usr/share/arduino/hardware/arduino/cores/arduino/new.h:
+
+/usr/share/arduino/hardware/arduino/variants/standard/pins_arduino.h:
+
+src/AttitudeManager.h:
+
+src/Util.h:
+
+libs/MatrixMath/MatrixMath.h:
+
+src/Motor.h:
+
+/usr/share/arduino/libraries/Servo/Servo.h:
+
+src/Sensors.h:
+
+src/IMU.h:
+
+libs/I2Cdev/I2Cdev.h:
+
+/usr/share/arduino/libraries/Wire/Wire.h:
+
+/usr/share/arduino/hardware/arduino/cores/arduino/Stream.h:
+
+libs/MPU6050/helper_3dmath.h:
+
+libs/MPU6050/MPU6050.h:
+
+src/RCReceiver.h:

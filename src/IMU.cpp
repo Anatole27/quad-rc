@@ -1,4 +1,5 @@
 #include "IMU.h"
+#include "MPU6050_6Axis_MotionApps20.h"
 
 IMU::IMU() : mpu(0x69), dmpReady(false), mpuIntStatus(0), devStatus(0),
     fifoCount(0), q(1,0,0,0), qOffset(1,0,0,0), aa(0,0,0), aaReal(0,0,0), aaWorld(0,0,0), gravity(0,0,0)

@@ -30,7 +30,6 @@ int main()
     //Test
     //Initialisation
     attitudeManager = new AttitudeManager();
-    // On passe ici
     sensors = new Sensors();
     receiver = new RCReceiver();
     master = new Master();
