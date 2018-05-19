@@ -55,22 +55,21 @@ int main()
             sensors->getGyroRates(state + 3);
             attitudeManager->getReference(ref);
 
-            Serial.print(millis()); Serial.print(F(","));
+//            for(int i = 0;i<6;i++){
+//                Serial.print(state[i],4); Serial.print(F(" "));}
+//            Serial.println();
+//            for(int i = 1;i<4;i++)
+//            {Serial.print(ref[i],4); Serial.print(F(" "));}
 
-            for(int i = 0;i<6;i++){
-                Serial.print(state[i],4); Serial.print(F(","));}
-            for(int i = 1;i<4;i++)
-            {Serial.print(ref[i],4); Serial.print(F(","));}
-
-            Serial.print(attitudeManager->m_motor1.m_pulse); Serial.print(F(","));
-            Serial.print(attitudeManager->m_motor2.m_pulse); Serial.print(F(","));
-            Serial.print(attitudeManager->m_motor3.m_pulse); Serial.print(F(","));
-            Serial.print(attitudeManager->m_motor4.m_pulse); Serial.print(F(","));
+//            Serial.print(attitudeManager->m_motor1.m_pulse); Serial.print(F(" "));
+//            Serial.print(attitudeManager->m_motor2.m_pulse); Serial.print(F(" "));
+//            Serial.print(attitudeManager->m_motor3.m_pulse); Serial.print(F(" "));
+//            Serial.print(attitudeManager->m_motor4.m_pulse); Serial.print(F(" "));
 
             attitudeManager->getKPosition((float*)Kposition);
             attitudeManager->getKSpeed((float*)Kspeed);
-            Serial.print(Kposition[0][3]); Serial.print(F(","));
-            Serial.println(-Kspeed[0][3]);
+//            Serial.print(Kposition[0][3]); Serial.print(F(","));
+//            Serial.println(-Kspeed[0][3]);
         }
         delay(1);
     }

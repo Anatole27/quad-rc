@@ -25,6 +25,8 @@ public:
 private:
     int m_state;
     int m_initState;
+    float reference[4];
+    bool wasYawCommandOverThr;
 };
 
 extern Master* master;

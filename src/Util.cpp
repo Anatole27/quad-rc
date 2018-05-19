@@ -16,7 +16,17 @@ void Util::compareAttitudes(float *att1, float *att2, float *dest)
 
 float Util::modulo2pi(float angle)
 {
-    return fmod(angle+PI,2*PI)-PI;
+    float angleWrapped = fmod(angle,2*PI);
+    if(angleWrapped <= -PI){
+        angleWrapped += 2*PI;
+    }
+    else{
+        if(angleWrapped > PI){
+            angleWrapped -= 2*PI;
+        }
+
+    }
+    return angleWrapped;
 }
 
 float Util::norm(float* vect, const int n)

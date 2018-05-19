@@ -88,6 +88,7 @@ bool Sensors::endInit()
     // initialization is finished when the IMU is horizontal
     if(millis()-timeStart > INIT_TIME)
     {
+        Serial.println(F("Reset gyro path"));
         resetGyroPath();
         return true;
     }
