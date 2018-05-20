@@ -34,6 +34,7 @@ public :
     float gyroRates[3]; // p,q,r
     bool imuInitialized;
     long timeStart;
+    long timeIntermediate;
     float alpha_angle;
     float alpha_gyro;
 };

@@ -73,17 +73,16 @@ void IMU::readData() {
         mpuIntStatus = mpu.getIntStatus();
         // get current FIFO count
         fifoCount = mpu.getFIFOCount();
-        Serial.print(" Fifo count : ");
-        Serial.print(fifoCount);
-        Serial.print(" Packet size : ");
-        Serial.print(packetSize);
         // check for overflow (this should never happen unless our code is too inefficient)
         if ((mpuIntStatus & 0x10) || fifoCount == 1024) {
             // reset so we can continue cleanly
             mpu.resetFIFO();
             Serial.println(F("FIFO overflow!"));
             // otherwise, check for DMP data ready interrupt (this should happen frequently)
-        } else if (mpuIntStatus & 0x02) {
+        } else{
+            while (!(mpuIntStatus & 0x02)){
+                mpuIntStatus = mpu.getIntStatus(); // Wait until new data is available. (Nothing else to do)
+            }
             // wait for correct available data length, should be a VERY short wait
             while (fifoCount < packetSize) fifoCount = mpu.getFIFOCount();
 
@@ -108,13 +107,6 @@ void IMU::readData() {
             euler[2] = -euler[0]; // Psi
             euler[0] = -phi; // Phi
             euler[1] = -euler[1]; // Theta
-
-            Serial.print(". Euler raw angles : ");
-            Serial.print(euler[0]);
-            Serial.print(" ");
-            Serial.print(euler[1]);
-            Serial.print(" ");
-            Serial.println(euler[2]);
 
             //get Gyro rates
             mpu.dmpGetGyro(gyro, fifoBuffer);

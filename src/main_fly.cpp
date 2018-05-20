@@ -5,8 +5,6 @@
 #include "RCReceiver.h"
 #include "Master.h"
 
-#define SAMPLE_TIME 25 //ms
-
 void setGains(AttitudeManager *attitudeManager);
 
 AttitudeManager* attitudeManager;
@@ -14,11 +12,17 @@ Sensors* sensors;
 RCReceiver* receiver;
 Master* master;
 
+long meanPeriod = 0;
+
+
 int main()
 {
     init();
     int led = 13;
-    long time = 0;
+    float state[6] = {0};
+    float cmd[4] = {0};
+    float ref[4] = {0};
+    unsigned long time;
 
     // the setup routine runs once when you press reset:
     // initialize the digital pin as an output.
@@ -37,41 +41,51 @@ int main()
     //Initialization
     master->init();
 
-    float state[6] = {0};
-    float ref[4] = {0};
-    float Kposition[4][4];
-    float Kspeed[4][4];
     Serial.println(F("Start"));
     while(true){
-        if(millis()-time > SAMPLE_TIME){ // 40 Hz
-            time = millis();
-            master->run();
-            attitudeManager->run();
-            receiver->run();
-            sensors->run();
-            setGains(attitudeManager);
+        time = millis();
 
-            sensors->getEulerAngles(state);
-            sensors->getGyroRates(state + 3);
-            attitudeManager->getReference(ref);
+        // Master
+        master->run();
 
-//            for(int i = 0;i<6;i++){
-//                Serial.print(state[i],4); Serial.print(F(" "));}
-//            Serial.println();
-//            for(int i = 1;i<4;i++)
-//            {Serial.print(ref[i],4); Serial.print(F(" "));}
+        // Attitude manager
+        attitudeManager->run();
 
-//            Serial.print(attitudeManager->m_motor1.m_pulse); Serial.print(F(" "));
-//            Serial.print(attitudeManager->m_motor2.m_pulse); Serial.print(F(" "));
-//            Serial.print(attitudeManager->m_motor3.m_pulse); Serial.print(F(" "));
-//            Serial.print(attitudeManager->m_motor4.m_pulse); Serial.print(F(" "));
+        // Receiver
+        receiver->run();
 
-            attitudeManager->getKPosition((float*)Kposition);
-            attitudeManager->getKSpeed((float*)Kspeed);
-//            Serial.print(Kposition[0][3]); Serial.print(F(","));
-//            Serial.println(-Kspeed[0][3]);
-        }
-        delay(1);
+        // Sensors
+        sensors->run();
+
+        // Other
+        setGains(attitudeManager); // Update gains listening serial
+
+
+        // Debug outputs
+        sensors->getEulerAngles(state);
+        sensors->getGyroRates(state + 3);
+        attitudeManager->getReference(ref);
+        attitudeManager->getCommand(cmd);
+
+                    for(int i = 0;i<3;i++){
+                        Serial.print(state[i],4); Serial.print(F(" "));}
+                    for(int j = 0;j<4;j++){
+                        Serial.print(cmd[j]/100.0,4); Serial.print(F(" "));}
+                    for(int i = 1;i<4;i++)
+                    {Serial.print(ref[i],4); Serial.print(F(" "));}
+//                    Serial.println("");
+
+                    Serial.print(attitudeManager->m_motor1.m_pulse); Serial.print(F(" "));
+                    Serial.print(attitudeManager->m_motor2.m_pulse); Serial.print(F(" "));
+                    Serial.print(attitudeManager->m_motor3.m_pulse); Serial.print(F(" "));
+                    Serial.print(attitudeManager->m_motor4.m_pulse); Serial.print(F(" "));
+                    Serial.println();
+
+        //            attitudeManager->getKPosition((float*)Kposition);
+        //            attitudeManager->getKSpeed((float*)Kspeed);
+        //            Serial.print(Kposition[0][3]); Serial.print(F(","));
+        //            Serial.println(-Kspeed[0][3]);
+                    Serial.println(millis() - time);
     }
 }
 
@@ -79,25 +93,45 @@ void setGains(AttitudeManager* attitudeManager)
 {
     String number;   // Gain
     String fb; // Gain type
+    String axis;
     number = NULL;
     fb = NULL;
     float K[4] = {0};
 
     if(Serial.available() > 0){
         // read the incoming byte:
-        number = Serial.readStringUntil('K');
+        number = Serial.readStringUntil(' ');
         if(number != NULL){
-            fb = Serial.readString();
+            fb = Serial.readStringUntil(' ');
+            axis = Serial.readString();
 
-            if(fb.compareTo("p") == 0){
-                Serial.println(F("Change"));
-                K[3] = (float)number.toInt()*51100.f;
-                attitudeManager->setKPosition(K);}
+            if(fb.compareTo("Kp") == 0){
+                attitudeManager->getKPosition(K);
+                K[axis.toInt()] = (float)number.toInt();
+                attitudeManager->setKPosition(K);
+                Serial.print(F("New Kp["));
+                Serial.print(axis);
+                Serial.print(F("] = "));
+                Serial.println(K[axis.toInt()]);
 
-            if(fb.compareTo("v") == 0){
-                Serial.println(F("Change"));
-                K[3] = (float)number.toInt()*23280.f;
-                attitudeManager->setKSpeed(K);}
+                Serial.print(F("Kp = "));
+                for(int i = 0; i<4; i++){
+                    Serial.print(K[i]);
+                    Serial.print(" ");
+                }
+                Serial.println("");
+
+            }
+
+            if(fb.compareTo("Kv") == 0){
+                attitudeManager->getKSpeed(K);
+                K[axis.toInt()] = (float)number.toInt();
+                attitudeManager->setKSpeed(K);
+                Serial.print(F("New Kv["));
+                Serial.print(axis);
+                Serial.print(F("] = "));
+                Serial.println(K[axis.toInt()]);
+            }
 
             number = NULL;
         }

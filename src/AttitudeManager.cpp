@@ -7,8 +7,10 @@ AttitudeManager::AttitudeManager()
     m_period = 50; // milliseconds
 
     // Gain init
-    float KP[4] = {3546682.f,   5110000.f,   5110000.f,    51100000.f};
-    float KS[4] = {6770939.f,    2328000.f,    2328000.f,   4656000.f};
+    //    float KP[4] = {3546682.f,   5110000.f,   5110000.f,    51100000.f};
+    //    float KS[4] = {0.f,    2328000.f,    2328000.f,   4656000.f};
+    float KP[4] = {125.f,   0.f,   0.f,    0.f};
+    float KS[4] = {0.f,    0.f,    0.f,   0.f};
     float KI[4] = {0};
 
     setKPosition((float*) KP);
@@ -129,7 +131,7 @@ void AttitudeManager::setPeriod(long period)
 // Private methods
 
 void AttitudeManager::getCommand(float* command)
-// Calculate motor commands (speed^2-averagespeed^2 with speeds in tr/s)
+// Calculate motor commands
 {
     // State, Derivative, Integral and reference
     float state[4] = {0};
@@ -143,6 +145,12 @@ void AttitudeManager::getCommand(float* command)
     getIntegral((float*) stateIntegral);
     getReference((float*) reference);
     Util::compareAttitudes((float*)reference,(float*)state,(float*)error);
+
+//    for(int i=0; i<4; i++){
+//        Serial.print(" ");
+//        Serial.print(error[i]);
+//    }
+//    Serial.print(" ");
 
     //Following calculations :
     // Command = Kp*Error + Kv*stateDerivative + Ki*stateIntegral
@@ -295,10 +303,14 @@ void AttitudeManager::setNominalSpeed(long nominalSpeed)
 
 void AttitudeManager::getKPosition(float *Kp)
 {
-    Matrix.Copy((float*)m_KPosition,4,4,Kp);
+    for(int i = 0; i<4; i++){
+        Kp[i] = abs(m_KPosition[0][i]);
+    }
 }
 
 void AttitudeManager::getKSpeed(float *Kv)
 {
-    Matrix.Copy((float*)m_KSpeed,4,4,Kv);
+    for(int i = 0; i<4; i++){
+        Kv[i] = abs(m_KSpeed[0][i]);
+    }
 }

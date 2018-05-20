@@ -75,7 +75,7 @@ void Master::init()
 
 void Master::run()
 {
-    attitudeManager->getReference(reference);
+//    attitudeManager->getReference(reference);
     float state[4] = {0};
 
     //    sensors->alpha_angle = receiver->getChannel5()*(0.9-0.5)/100+0.5;
@@ -121,7 +121,7 @@ void Master::run()
             attitudeManager->disable();
             attitudeManager->setMinPulse();
             m_state = LANDING;
-            //Serial.println(F("Landing"));
+            Serial.println(F("Landing"));
         }
         break;
 
@@ -129,7 +129,7 @@ void Master::run()
         if(!receiver->throttleDown()){
             attitudeManager->enable();
             m_state = FLY_STATE;
-            //Serial.println(F("Flight"));
+            Serial.println(F("Flight"));
         }
         break;
     }

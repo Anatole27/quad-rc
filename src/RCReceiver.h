@@ -10,9 +10,9 @@
 #define PINAUTOPILOT 3
 #define PINAEROBATICS 4
 
-#define YAWMIN -2.f
-#define YAWMAX 2.f
-#define PITCHMIN 0.4f // pi/4
+#define YAWMIN -0.2f
+#define YAWMAX 0.2f
+#define PITCHMIN 0.4f // pi/8
 #define PITCHMAX -0.4f
 #define ROLLMIN -0.4f
 #define ROLLMAX 0.4f

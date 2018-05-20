@@ -1,6 +1,6 @@
 #include "Sensors.h"
 
-Sensors::Sensors() : imu(), imuInitialized(false), alpha_angle(0), alpha_gyro(ALPHA_INIT)
+Sensors::Sensors() : imu(), imuInitialized(false), alpha_angle(0), alpha_gyro(ALPHA_INIT), timeIntermediate(0)
 {
     // Initialize variables at 0
     for(int i = 0;i<3;i++){
@@ -92,5 +92,13 @@ bool Sensors::endInit()
         resetGyroPath();
         return true;
     }
-    else return false;
+    else
+    {
+      if(millis() - timeIntermediate > 1000)
+      {
+          Serial.print(F("Remaining time = "));
+          Serial.println((INIT_TIME - millis() + timeStart)/1000);
+          timeIntermediate = millis();
+      }
+    }return false;
 }

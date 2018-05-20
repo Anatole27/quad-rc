@@ -32,7 +32,7 @@ RCReceiver::RCReceiver()
 void RCReceiver::run()
 {
     pulseLength[pinRead] = pulseIn(pin[pinRead],HIGH,TIMEOUT); //pulse length reading (one channel at a time)
-    pinRead = (pinRead+1)%6; // Incrementation of pinRead for next pulse read
+    pinRead = (pinRead+1)%4; // Incrementation of pinRead for next pulse read (Autopilot and aerobatics not checked)
 }
 
 float RCReceiver::getYawCommand()
@@ -114,7 +114,7 @@ bool RCReceiver::throttleUp()
 
 bool RCReceiver::signalReceived()
 {
-    for(int i = 0; i<6;i++)
+    for(int i = 0; i<4;i++)
     {
         if(pulseLength[i] == 0)
             return false;
