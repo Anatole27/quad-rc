@@ -10,6 +10,13 @@
 #define PINAUTOPILOT 3
 #define PINAEROBATICS 4
 
+#define YAWIDX 0
+#define PITCHIDX 1
+#define ROLLIDX 2
+#define THROTTLEIDX 3
+#define AUTOPILOTIDX 4
+#define AEROBATICSIDX 5
+
 #define YAWMIN -0.2f
 #define YAWMAX 0.2f
 #define PITCHMIN 0.4f // pi/8
@@ -44,9 +51,10 @@ public:
     bool signalReceived();
 
 //private:
-    unsigned long pulseLength[6]; // Stores every channels signal length
+    uint16_t pulseLength[6]; // Stores every channels signal length
     int pin[6]; // Stores pins numbers for channels 1 to 6
     int pinRead; // Pin read when run() is called
+    void rcReadValues();
 };
 
 extern RCReceiver *receiver;
